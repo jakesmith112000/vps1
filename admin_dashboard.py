@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AOL Proxy Vault | Classic Admin Console</title>
+    <style>
+        /* CLASSIC ADMIN STYLE - VINTAGE DASHBOARD WITH DARK MODE SUPPORT */
+        :root {
+            --bg-body: #e9eef3;
+            --container-bg: #fefef7;
+            --header-bg: linear-gradient(to bottom, #f4f7fc, #e2e9f2);
+            --border-light: #cdd9ed;
+            --border-heavy: #b8c7df;
+            --text-primary: #1e2a3e;
+            --text-secondary: #1e4668;
+            --card-bg: #ffffff;
+            --card-border: #dce5f0;
+            --table-header-bg: #f4f9ff;
+            --table-row-hover: #fafdff;
+            --badge-bg: #eef2fa;
+            --input-border: #cbdae6;
+            --btn-classic-bg: #f0f3f8;
+            --btn-classic-border: #b9c8e5;
+            --stat-number: #1f4e7a;
+            --success: #2c6e2c;
+            --danger: #b13e3e;
+            --warning: #e6a017;
+            --info: #1e4668;
+        }
+
+        body.dark {
+            --bg-body: #12161c;
+            --container-bg: #1a2029;
+            --header-bg: linear-gradient(to bottom, #1e2a3a, #16202a);
+            --border-light: #2d3748;
+            --border-heavy: #3a4556;
+            --text-primary: #e2e8f0;
+            --text-secondary: #90b4d9;
+            --card-bg: #252d3a;
+            --card-border: #334155;
+            --table-header-bg: #1e293b;
+            --table-row-hover: #2a3442;
+            --badge-bg: #2d3748;
+            --input-border: #4a5568;
+            --btn-classic-bg: #2d3748;
+            --btn-classic-border: #4a5a78;
+            --stat-number: #7aa9d6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-body);
+            font-family: 'Segoe UI', 'Lucida Grande', 'Trebuchet MS', 'Verdana', sans-serif;
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .classic-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+        }
+
+        .vintage-header {
+            background: var(--header-bg);
+            padding: 18px 28px;
+            border-bottom: 2px solid var(--border-heavy);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .title-section h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: var(--text-secondary);
+            text-shadow: 1px 1px 0 rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark .title-section h1 {
+            text-shadow: none;
+        }
+
+        .title-section h1 span {
+            background: #1e4668;
+            color: white;
+            font-size: 20px;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-weight: normal;
+        }
+
+        body.dark .title-section h1 span {
+            background: #2c5a8c;
+        }
+
+        .vintage-badge {
+            background: var(--badge-bg);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border: 1px solid var(--btn-classic-border);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .theme-toggle-btn {
+            background: var(--btn-classic-bg);
+            border: 1px solid var(--btn-classic-border);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--table-row-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-classic {
+            background: var(--btn-classic-bg);
+            border: 1px solid var(--btn-classic-border);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-classic:hover {
+            background: var(--table-row-hover);
+            border-color: #8aa2c2;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #fbe9e7;
+            border-color: #e0b3b0;
+            color: #bc4e2c;
+        }
+
+        body.dark .btn-danger {
+            background: #3a2a28;
+            border-color: #7a4a44;
+            color: #e2977a;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            padding: 24px 28px;
+            background: var(--container-bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .stat-block {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 14px 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.1s;
+            cursor: pointer;
+        }
+
+        .stat-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-block h4 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--stat-number);
+            line-height: 1;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+        .trend-steady { color: var(--warning); }
+
+        .stat-footnote {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            opacity: 0.8;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            padding: 0 28px;
+            background: var(--container-bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .tab-btn-classic {
+            background: transparent;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .tab-btn-classic.active {
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            border-bottom: 3px solid var(--text-secondary);
+        }
+
+        .tab-btn-classic:hover:not(.active) {
+            background: var(--table-row-hover);
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 24px 28px;
+            background: var(--container-bg);
+        }
+
+        .tab-pane.active-pane {
+            display: block;
+            animation: fadeSlide 0.2s ease;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .classic-table-wrapper {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+        }
+
+        .classic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .classic-table th {
+            text-align: left;
+            padding: 14px 16px;
+            background: var(--table-header-bg);
+            border-bottom: 2px solid var(--border-light);
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .classic-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: middle;
+            color: var(--text-primary);
+        }
+
+        .classic-table tr:hover td {
+            background: var(--table-row-hover);
+        }
+
+        .badge-classic {
+            background: var(--badge-bg);
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .badge-success {
+            background: #e1f7ea;
+            color: #1f6e43;
+        }
+
+        .badge-danger {
+            background: #fbe9e7;
+            color: #bc4e2c;
+        }
+
+        .badge-warning {
+            background: #fff3e0;
+            color: #e6a017;
+        }
+
+        body.dark .badge-success {
+            background: #1a4a2e;
+            color: #7ad0a0;
+        }
+
+        body.dark .badge-danger {
+            background: #3a2a28;
+            color: #e2977a;
+        }
+
+        body.dark .badge-warning {
+            background: #3a3220;
+            color: #e6a017;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mini-btn {
+            background: var(--btn-classic-bg);
+            border: 1px solid var(--btn-classic-border);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+            font-family: monospace;
+            color: var(--text-secondary);
+        }
+
+        .mini-btn:hover {
+            background: var(--table-row-hover);
+        }
+
+        .bulk-bar {
+            background: var(--card-bg);
+            padding: 14px 20px;
+            border-radius: 60px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            border: 1px solid var(--border-light);
+        }
+
+        .bulk-bar span {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input, .form-input, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 26px;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        textarea {
+            border-radius: 12px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        button {
+            background: var(--btn-classic-bg);
+            border: 1px solid var(--btn-classic-border);
+            border-radius: 32px;
+            padding: 8px 18px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        button.primary {
+            background: #1f5e96;
+            border-color: #16507f;
+            color: white;
+        }
+
+        body.dark button.primary {
+            background: #2c6a9e;
+            border-color: #1e5a8a;
+        }
+
+        button.primary:hover {
+            background: #144b74;
+        }
+
+        .system-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .system-panel h4 {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logs-container {
+            background: var(--bg-body);
+            border-radius: 12px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-light);
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .log-info { color: var(--info); }
+        .log-success { color: var(--success); }
+        .log-error { color: var(--danger); }
+        .log-warning { color: var(--warning); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stats-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stats-card .value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--stat-number);
+        }
+
+        .stats-card .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            background: var(--border-light);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            background: var(--success);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .grid-2col {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .flex-grow {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--text-secondary);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 1100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .code-mono {
+            font-family: monospace;
+            background: var(--badge-bg);
+            padding: 2px 5px;
+            border-radius: 6px;
+        }
+
+        .modal-classic {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: var(--container-bg);
+            max-width: 420px;
+            width: 90%;
+            border-radius: 28px;
+            border: 1px solid var(--border-light);
+            padding: 24px;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
+            color: var(--text-primary);
+        }
+
+        .add-proxy-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .add-proxy-form input {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .select-all-bar {
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border: 1px solid var(--border-light);
+        }
+        
+        .select-all-bar button {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+        
+        .selected-count {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        .refresh-btn {
+            background: var(--btn-classic-bg);
+            border: 1px solid var(--btn-classic-border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="classic-container">
+    <div class="vintage-header">
+        <div class="title-section">
+            <h1>📜 AOL Proxy Vault <span>classic</span></h1>
+            <div class="vintage-badge">⚙️ secure credentials & cookies</div>
+            <button id="themeToggleBtn" class="theme-toggle-btn">🌓 Dark/Light Mode</button>
+        </div>
+        <div class="header-actions">
+            <button class="btn-classic" id="refreshAllBtn">⟳ Refresh</button>
+            <a href="/admin/logout" class="btn-classic">🚪 Logout</a>
+        </div>
+    </div>
+
+    <div class="stats-row" id="statsRow">
+        <div class="stat-block" onclick="switchTab('credsTab')">
+            <h4>📇 Total Credentials</h4>
+            <div class="stat-number" id="totalCreds">0</div>
+            <div class="stat-trend" id="credTrend">📈 +0 this week</div>
+            <div class="stat-footnote">accounts stored</div>
+        </div>
+        <div class="stat-block" onclick="switchTab('cookiesTab')">
+            <h4>🍪 Total Cookie Files</h4>
+            <div class="stat-number" id="totalCookiesCount">0</div>
+            <div class="stat-trend" id="cookieTrend">📊 JSON format</div>
+            <div class="stat-footnote">cookie files saved</div>
+        </div>
+        <div class="stat-block" onclick="switchTab('proxyTab')">
+            <h4>📈 Capture success</h4>
+            <div class="stat-number" id="successRate">0%</div>
+            <div class="progress-bar"><div class="progress-fill" id="successProgress" style="width: 0%"></div></div>
+            <div class="stat-footnote">accounts with cookies</div>
+        </div>
+        <div class="stat-block" onclick="switchTab('proxyTab')">
+            <h4>🌐 Proxy Health</h4>
+            <div class="stat-number" id="proxyHealth">0%</div>
+            <div class="progress-bar"><div class="progress-fill" id="healthProgress" style="width: 0%; background: var(--success);"></div></div>
+            <div class="stat-footnote">working / total</div>
+        </div>
+    </div>
+
+    <div style="padding: 0 28px 12px 28px;">
+        <div class="bulk-bar">
+            <span>📦 BULK OPERATIONS</span>
+            <button class="mini-btn" id="bulkDownloadTxtBtn">📄 Download ALL as TXT (bulk)</button>
+            <button class="mini-btn" id="bulkDownloadJsonBtn">📦 Download ALL as JSON (bulk)</button>
+            <button class="mini-btn" id="downloadAllCookiesZipBtn">🍪 Bulk Cookies ZIP</button>
+            <span style="margin-left: auto;">⬇️ per‑profile exports available in tables</span>
+        </div>
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-btn-classic active" data-tab="credsTab">🔐 Credentials</button>
+        <button class="tab-btn-classic" data-tab="cookiesTab">🍪 Cookie files</button>
+        <button class="tab-btn-classic" data-tab="proxyTab">🌐 Proxy Management</button>
+        <button class="tab-btn-classic" data-tab="domainsTab">🔗 Domains</button>
+        <button class="tab-btn-classic" data-tab="systemTab">⚙️ System & Analytics</button>
+    </div>
+
+    <div id="credsTab" class="tab-pane active-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <h3 style="color: var(--text-secondary);">📋 Stored credentials</h3>
+            <input type="text" id="searchCredsInput" placeholder="🔍 filter by email..." style="width: 260px; padding: 8px 14px; border-radius: 60px;">
+        </div>
+        <div class="classic-table-wrapper" id="credentialsTableWrapper">
+            <div style="padding: 30px; text-align: center;">Loading credentials...</div>
+        </div>
+    </div>
+
+    <div id="cookiesTab" class="tab-pane">
+        <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🍪 Saved cookie files (JSON format)</h3></div>
+        <div class="classic-table-wrapper" id="cookiesTableWrapper">
+            <div style="padding: 30px; text-align: center;">Loading cookies...</div>
+        </div>
+    </div>
+
+    <div id="proxyTab" class="tab-pane">
+        <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🌐 SOCKS5 Proxy Management</h3></div>
+        <div class="stats-row" style="padding: 16px 0;">
+            <div class="stat-block"><h4>📊 Total Proxies</h4><div class="stat-number" id="proxyTotalCount">0</div><div class="stat-footnote">in database</div></div>
+            <div class="stat-block"><h4>✅ Working</h4><div class="stat-number" id="proxyWorkingCount">0</div><div class="stat-footnote">passed last test</div></div>
+            <div class="stat-block"><h4>❌ Failed</h4><div class="stat-number" id="proxyFailedCount">0</div><div class="stat-footnote">last test failed</div></div>
+            <div class="stat-block"><h4>❓ Untested</h4><div class="stat-number" id="proxyUntestedCount">0</div><div class="stat-footnote">never tested</div></div>
+        </div>
+        
+        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 12px;">➕ Add New Proxy</h4>
+            <div class="add-proxy-form">
+                <input type="text" id="newProxyHost" placeholder="Host (e.g., proxy.example.com)">
+                <input type="number" id="newProxyPort" placeholder="Port" style="width: 100px;">
+                <input type="text" id="newProxyUsername" placeholder="Username (optional)">
+                <input type="password" id="newProxyPassword" placeholder="Password (optional)">
+                <button id="addProxyBtn" class="primary">➕ Add Proxy</button>
+            </div>
+        </div>
+
+        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 12px;">🔑 Proxy-Seller API Integration</h4>
+            <p style="margin-bottom: 12px; font-size: 13px;">Get your API key from <a href="https://proxy-seller.com" target="_blank">proxy-seller.com</a></p>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <input type="password" id="proxySellerApiKey" placeholder="Enter your API key" style="flex: 1; min-width: 200px;">
+                <button id="testProxySellerApiBtn" class="btn-classic">🔗 Test API</button>
+                <button id="syncProxySellerBtn" class="primary">🔄 Sync Proxies from API</button>
+            </div>
+            <div id="proxySellerBalance" style="margin-top: 12px; font-size: 13px;"></div>
+            <div id="proxySellerMsg" style="margin-top: 8px; font-size: 13px;"></div>
+        </div>
+
+        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 12px;">📥 Manual Import (CSV)</h4>
+            <p style="margin-bottom: 12px; font-size: 13px;">Format: <code>host,port,username,password</code> (one per line)</p>
+            <textarea id="proxyCsvInput" placeholder="proxy1.example.com,12345,user1,pass123&#10;proxy2.example.com,12346,user1,pass123" rows="4"></textarea>
+            <div style="display: flex; gap: 12px; margin-top: 12px;">
+                <button id="importProxyCsvBtn" class="btn-classic">📥 Import CSV</button>
+                <button id="testAllProxiesBtn" class="btn-classic">🧪 Test All Proxies</button>
+                <button id="refreshProxiesBtn" class="btn-classic">⟳ Refresh</button>
+            </div>
+            <div id="proxyImportMsg" style="margin-top: 12px; font-size: 13px;"></div>
+        </div>
+
+        <div class="select-all-bar" id="selectAllBar">
+            <button id="selectAllProxiesBtn" class="mini-btn">☑️ Select All</button>
+            <button id="unselectAllProxiesBtn" class="mini-btn">⬜ Unselect All</button>
+            <button id="deleteSelectedProxiesBtn" class="mini-btn" style="background: #fbe9e7; color: #bc4e2c;">🗑️ Delete Selected</button>
+            <span class="selected-count" id="selectedCount">0 selected</span>
+        </div>
+
+        <div class="classic-table-wrapper" id="proxyTableWrapper">
+            <div style="padding: 20px; text-align: center;">Loading proxy list...</div>
+        </div>
+    </div>
+
+    <div id="domainsTab" class="tab-pane">
+        <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🔗 Domain Management</h3></div>
+        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 12px;">🌐 Proxy Domains</h4>
+            <p style="margin-bottom: 12px; font-size: 13px;">Add domains that point to your VPS. All proxy domains route to the proxy server.</p>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="newProxyDomain" placeholder="e.g., proxy2.example.com" style="flex: 1; min-width: 200px;">
+                <button id="addProxyDomainBtn" class="primary">➕ Add Domain</button>
+            </div>
+            <div id="addDomainMsg" style="margin-top: 12px; font-size: 13px;"></div>
+            <div id="proxyDomainList" style="margin-top: 16px;">
+                <div style="padding: 20px; text-align: center;">Loading domains...</div>
+            </div>
+        </div>
+        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+            <h4 style="margin-bottom: 12px;">🔧 Admin Domain</h4>
+            <p style="margin-bottom: 12px; font-size: 13px;">Set the domain for the admin dashboard.</p>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="adminDomainInput" placeholder="e.g., admin.example.com" style="flex: 1; min-width: 200px;">
+                <button id="setAdminDomainBtn" class="primary">💾 Set Admin Domain</button>
+            </div>
+            <div id="setAdminDomainMsg" style="margin-top: 12px; font-size: 13px;"></div>
+        </div>
+        <div class="telegram-panel-classic">
+            <h4 style="margin-bottom: 12px;">🔒 Nginx & SSL</h4>
+            <p style="margin-bottom: 12px; font-size: 13px;">Update Nginx config and setup SSL certificates.</p>
+            <div style="display: flex; gap: 12px;">
+                <button id="updateNginxBtn" class="btn-classic">🔄 Update Nginx Config</button>
+                <button id="setupSslBtn" class="btn-classic">🔒 Setup SSL (Certbot)</button>
+            </div>
+            <div id="nginxMsg" style="margin-top: 12px; font-size: 13px;"></div>
+        </div>
+    </div>
+
+    <div id="systemTab" class="tab-pane">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="value" id="sysTotalCreds">0</div>
+                <div class="label">Total Credentials</div>
+            </div>
+            <div class="stats-card">
+                <div class="value" id="sysTotalCookies">0</div>
+                <div class="label">Total Cookies</div>
+            </div>
+            <div class="stats-card">
+                <div class="value" id="sysTotalProxies">0</div>
+                <div class="label">Total Proxies</div>
+            </div>
+            <div class="stats-card">
+                <div class="value" id="sysWorkingProxies">0</div>
+                <div class="label">Working Proxies</div>
+            </div>
+            <div class="stats-card">
+                <div class="value" id="sysSuccessRate">0%</div>
+                <div class="label">Success Rate</div>
+            </div>
+            <div class="stats-card">
+                <div class="value" id="sysProxyHealth">0%</div>
+                <div class="label">Proxy Health</div>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="system-panel">
+            <h4>🖥️ System Information</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div><strong>Server Time:</strong> <span id="serverTime">-</span></div>
+                <div><strong>Uptime:</strong> <span id="uptime">-</span></div>
+                <div><strong>Database:</strong> <span id="dbStatus" class="badge-success badge-classic">Connected</span></div>
+                <div><strong>Last Backup:</strong> <span id="lastBackup">Never</span></div>
+            </div>
+        </div>
+
+        <!-- Activity Graph (Simple visual representation) -->
+        <div class="system-panel">
+            <h4>📊 Activity Overview</h4>
+            <div id="activityGraph" style="height: 150px; display: flex; align-items: flex-end; gap: 8px; margin-top: 16px;">
+                <!-- Bars will be added dynamically -->
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-secondary);">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+        </div>
+
+        <!-- Live Logs -->
+        <div class="system-panel">
+            <h4>📋 Live Activity Logs <button class="refresh-btn" id="clearLogsBtn" style="margin-left: 10px;">Clear Logs</button></h4>
+            <div class="logs-container" id="logsContainer">
+                <div class="log-entry log-info">🟢 System initialized</div>
+                <div class="log-entry log-info">📊 Loading statistics...</div>
+            </div>
+        </div>
+
+        <!-- Maintenance Actions -->
+        <div class="grid-2col">
+            <div class="flex-grow system-panel">
+                <h4>🛡️ Maintenance</h4>
+                <p style="margin-bottom: 12px; font-size: 13px;">Clear old sessions or wipe all data.</p>
+                <button id="clearOldSessionsBtn" class="btn-classic">🗑️ Clear old sessions (>24h)</button>
+                <button id="wipeAllDataBtn" class="btn-danger" style="margin-top: 10px;">⚠️ WIPE ALL CREDENTIALS & COOKIES</button>
+                <hr style="margin: 16px 0; border-color: var(--border-light);">
+                <div><button id="debugSessionsBtn" class="btn-classic">🔍 Debug session info</button></div>
+            </div>
+            <div class="flex-grow system-panel">
+                <h4>📦 Data Management</h4>
+                <p style="margin-bottom: 12px; font-size: 13px;">Export or backup your data.</p>
+                <button id="exportAllDataBtn" class="btn-classic">📥 Export All Data (JSON)</button>
+                <button id="backupDbBtn" class="btn-classic" style="margin-top: 10px;">💾 Backup Database</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="globalModal" class="modal-classic"><div class="modal-card"><h3 id="modalTitle">Confirm</h3><p id="modalMsg"></p><div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;"><button id="modalConfirmBtn">Yes</button><button id="modalCancelBtn">Cancel</button></div></div></div>
+
+<script>
+    // ---------- GLOBALS ----------
+    let currentCredentials = {};
+    let currentCookiesList = [];
+    let selectedProxies = new Set();
+    let currentProxiesList = [];
+    let activityLogs = [];
+    let lastStats = { totalCreds: 0, totalCookies: 0, workingProxies: 0, totalProxies: 0 };
+
+    // Logging function
+    function addLog(message, type = 'info') {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = { timestamp, message, type };
+        activityLogs.unshift(logEntry);
+        if (activityLogs.length > 50) activityLogs.pop();
+        
+        const logsContainer = document.getElementById('logsContainer');
+        if (logsContainer) {
+            const logDiv = document.createElement('div');
+            logDiv.className = `log-entry log-${type}`;
+            logDiv.innerHTML = `[${timestamp}] ${message}`;
+            logsContainer.insertBefore(logDiv, logsContainer.firstChild);
+            if (logsContainer.children.length > 50) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active-pane'));
+        document.getElementById(tabId).classList.add('active-pane');
+        document.querySelectorAll('.tab-btn-classic').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.tab-btn-classic[data-tab="${tabId}"]`).classList.add('active');
+    }
+
+    async function checkAuth() {
+        try {
+            const resp = await fetch('/admin/api/stats');
+            if (resp.status === 401 || resp.status === 302) {
+                window.location.href = '/admin/login';
+                return false;
+            }
+            return true;
+        } catch(e) {
+            window.location.href = '/admin/login';
+            return false;
+        }
+    }
+
+    function initTheme() {
+        const savedTheme = localStorage.getItem('classicTheme');
+        if (savedTheme === 'dark') document.body.classList.add('dark');
+        else document.body.classList.remove('dark');
+    }
+    
+    function toggleTheme() {
+        if (document.body.classList.contains('dark')) {
+            document.body.classList.remove('dark');
+            localStorage.setItem('classicTheme', 'light');
+            showToast("Light mode activated");
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem('classicTheme', 'dark');
+            showToast("Dark mode activated");
+        }
+    }
+    
+    function showToast(msg, isError = false) {
+        let toast = document.createElement('div');
+        toast.className = 'toast-message';
+        toast.style.background = isError ? '#b13e3e' : '#2a5f8a';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+        addLog(msg, isError ? 'error' : 'success');
+    }
+
+    function updateSelectedCount() {
+        const count = selectedProxies.size;
+        const selectedCountSpan = document.getElementById('selectedCount');
+        if (selectedCountSpan) {
+            selectedCountSpan.innerText = `${count} selected`;
+        }
+    }
+
+    // Update activity graph
+    function updateActivityGraph(workingCount, totalCount, successRate) {
+        const graphContainer = document.getElementById('activityGraph');
+        if (!graphContainer) return;
+        
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const heights = [65, 45, 80, 55, 70, 90, 60]; // Mock data - in real app, fetch from backend
+        
+        graphContainer.innerHTML = days.map((day, i) => `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <div style="height: ${heights[i]}px; width: 100%; background: var(--stat-number); border-radius: 4px; opacity: 0.7;"></div>
+                <span style="font-size: 10px;">${day}</span>
+            </div>
+        `).join('');
+    }
+
+    async function fetchAllStats() {
+        try {
+            const resp = await fetch('/admin/api/stats');
+            if (!resp.ok) return;
+            const stats = await resp.json();
+            
+            const totalCreds = stats.total_credentials || 0;
+            const totalCookies = stats.total_cookies || 0;
+            const emailsWithCookies = stats.emails_with_cookies || 0;
+            const successRateVal = totalCreds > 0 ? Math.round((emailsWithCookies / totalCreds) * 100) : 0;
+            
+            document.getElementById('totalCreds').innerText = totalCreds;
+            document.getElementById('totalCookiesCount').innerText = totalCookies;
+            document.getElementById('successRate').innerText = `${successRateVal}%`;
+            document.getElementById('successProgress').style.width = `${successRateVal}%`;
+            
+            // Update system tab stats
+            document.getElementById('sysTotalCreds').innerText = totalCreds;
+            document.getElementById('sysTotalCookies').innerText = totalCookies;
+            document.getElementById('sysSuccessRate').innerText = `${successRateVal}%`;
+            
+            // Update trends
+            const credChange = totalCreds - lastStats.totalCreds;
+            const credTrendSpan = document.getElementById('credTrend');
+            if (credTrendSpan) {
+                if (credChange > 0) credTrendSpan.innerHTML = `📈 +${credChange} this week`;
+                else if (credChange < 0) credTrendSpan.innerHTML = `📉 ${credChange} this week`;
+                else credTrendSpan.innerHTML = `📊 steady this week`;
+            }
+            
+            lastStats.totalCreds = totalCreds;
+            lastStats.totalCookies = totalCookies;
+            
+            document.getElementById('serverTime').innerText = new Date().toLocaleString();
+            
+        } catch(e) { console.warn(e); }
+    }
+
+    async function loadCredentials() {
+        const wrapper = document.getElementById('credentialsTableWrapper');
+        wrapper.innerHTML = '<div style="padding:30px; text-align:center;">Loading credentials...</div>';
+        try {
+            const resp = await fetch('/admin/api/credentials');
+            if (!resp.ok) throw new Error('Auth failed');
+            const data = await resp.json();
+            currentCredentials = data;
+            renderCredentialsTable(data);
+            addLog(`Loaded ${Object.keys(data).length} credentials`, 'info');
+        } catch(e) { 
+            wrapper.innerHTML = '<div style="padding:20px;color:red;">Error loading credentials</div>';
+            addLog(`Failed to load credentials: ${e.message}`, 'error');
+        }
+    }
+
+    function renderCredentialsTable(credsObj) {
+        const emails = Object.keys(credsObj);
+        const searchTerm = document.getElementById('searchCredsInput')?.value.toLowerCase() || '';
+        const filtered = emails.filter(email => email.toLowerCase().includes(searchTerm));
+        if(filtered.length === 0) {
+            document.getElementById('credentialsTableWrapper').innerHTML = '<div class="classic-table-wrapper"><div style="padding:32px; text-align:center;">📭 No credentials found</div></div>';
+            return;
+        }
+        let html = `<div class="classic-table-wrapper"><table class="classic-table"><thead><tr><th>Email</th><th>Password</th><th>Timestamp</th><th>Cookies count</th><th>Export (TXT/JSON)</th><th>Action</th></tr></thead><tbody>`;
+        for(let email of filtered) {
+            const info = credsObj[email];
+            const pass = info.password || '';
+            const ts = info.timestamp || 'unknown';
+            const cookieCount = info.total_cookies || 0;
+            const safeEmail = escapeHtml(email);
+            html += `<tr>
+                <td><strong>${safeEmail}</strong></td>
+                <td><span class="code-mono">${escapeHtml(pass)}</span></td>
+                <td>${ts}</td>
+                <td><span class="badge-classic">🍪 ${cookieCount}</span></td>
+                <td class="action-group">
+                    <button class="mini-btn" onclick="downloadProfileTxt('${escapeAttr(email)}')">📄 TXT</button>
+                    <button class="mini-btn" onclick="downloadProfileJson('${escapeAttr(email)}')">📦 JSON</button>
+                </td>
+                <td><button class="mini-btn" onclick="deleteCredentialAction('${escapeAttr(email)}')">🗑️ Delete</button></td>
+            </tr>`;
+        }
+        html += `</tbody></table></div>`;
+        document.getElementById('credentialsTableWrapper').innerHTML = html;
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    function escapeAttr(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/["']/g, '&#39;'); }
+
+    window.downloadProfileTxt = function(email) {
+        const info = currentCredentials[email];
+        if(!info) { showToast("Profile not found", true); return; }
+        const content = `Email: ${email}\nPassword: ${info.password}\nTimestamp: ${info.timestamp || 'N/A'}\nCookies count: ${info.total_cookies || 0}\n--- AOL Proxy Export ---`;
+        const blob = new Blob([content], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_credential.txt`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        showToast(`Downloaded TXT for ${email}`);
+        addLog(`Downloaded TXT for ${email}`, 'success');
+    };
+    
+    window.downloadProfileJson = function(email) {
+        const info = currentCredentials[email];
+        if(!info) { showToast("Profile not found", true); return; }
+        const exportObj = { email, password: info.password, timestamp: info.timestamp, cookies_count: info.total_cookies || 0, exported_at: new Date().toISOString() };
+        const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_profile.json`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        showToast(`Downloaded JSON for ${email}`);
+        addLog(`Downloaded JSON for ${email}`, 'success');
+    };
+    
+    async function bulkDownloadAllTxt() {
+        const resp = await fetch('/admin/api/credentials');
+        const data = await resp.json();
+        const lines = Object.entries(data).map(([email, info]) => `Email: ${email} | Password: ${info.password} | Timestamp: ${info.timestamp || ''} | Cookies Count: ${info.total_cookies || 0}`);
+        const blob = new Blob([lines.join('\n') || 'No credentials'], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `all_credentials_export_${Date.now()}.txt`; a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Downloaded bulk TXT (${Object.keys(data).length} profiles)`);
+        addLog(`Bulk TXT download: ${Object.keys(data).length} profiles`, 'success');
+    }
+    
+    async function bulkDownloadAllJson() {
+        const resp = await fetch('/admin/api/credentials');
+        const data = await resp.json();
+        const enhancedExport = { export_date: new Date().toISOString(), total_profiles: Object.keys(data).length, profiles: data };
+        const blob = new Blob([JSON.stringify(enhancedExport, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `all_credentials_backup_${Date.now()}.json`; a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Downloaded bulk JSON`);
+        addLog(`Bulk JSON download`, 'success');
+    }
+    
+    async function loadCookies() {
+    const wrapper = document.getElementById('cookiesTableWrapper');
+    wrapper.innerHTML = '<div style="padding:30px;">Loading cookies...</div>';
+    try {
+        const resp = await fetch('/admin/api/all-cookies');
+        if (!resp.ok) throw new Error('Auth failed');
+        const data = await resp.json();
+        currentCookiesList = data.cookies || [];
+        if(!currentCookiesList.length) { 
+            wrapper.innerHTML = '<div class="classic-table-wrapper"><div style="padding:32px;">No cookie files found.</div></div>'; 
+            return; 
+        }
+        
+        let html = `<div class="classic-table-wrapper"><table class="classic-table"><thead>
+            <tr>
+                <th>Associated Email</th>
+                <th>Cookie Count</th>
+                <th>Has Credentials</th>
+                <th>Download</th>
+                <th>Action</th>
+            </tr>
+        </thead><tbody>`;
+        
+        for(let c of currentCookiesList) {
+            const hasCredBadge = c.has_credentials ? '<span class="badge-success badge-classic">✓ Yes</span>' : '<span class="badge-classic">✗ No</span>';
+            
+            // Use the SAME pattern as credentials - fetch via API and create blob
+            // This avoids file path issues entirely
+            html += `<tr>
+                <td>${escapeHtml(c.email)}</td>
+                <td>${c.cookie_count}</td>
+                <td>${hasCredBadge}</td>
+                <td class="action-group">
+                    <button class="mini-btn" onclick="downloadCookieJson('${escapeAttr(c.email)}')">📄 Download JSON</button>
+                </td>
+                <td><button class="mini-btn" onclick="deleteCookieFile('${escapeAttr(c.filename)}')">🗑️ Delete</button></td>
+            </tr>`;
+        }
+        html += `</tbody>}</div>`;
+        wrapper.innerHTML = html;
+        addLog(`Loaded ${currentCookiesList.length} cookie files`, 'info');
+    } catch(e) { 
+        wrapper.innerHTML = '<div>Failed to load cookies</div>'; 
+        addLog(`Failed to load cookies: ${e.message}`, 'error');
+    }
+}
+
+// Add this NEW function - same pattern as downloadProfileJson
+window.downloadCookieJson = async function(email) {
+    showToast(`Preparing cookie data for ${email}...`);
+    try {
+        // Fetch the cookie data from the API
+        const resp = await fetch(`/admin/api/user-cookies/${encodeURIComponent(email)}`);
+        if (!resp.ok) throw new Error('Failed to fetch cookies');
+        const cookies = await resp.json();
+        
+        if (!cookies || Object.keys(cookies).length === 0) {
+            showToast("No cookies found for this account", true);
+            return;
+        }
+        
+        // Create export object (same format as credentials JSON)
+        const exportObj = {
+            email: email,
+            cookie_count: Object.keys(cookies).length,
+            cookies: cookies,
+            exported_at: new Date().toISOString()
+        };
+        
+        // Create blob and download (SAME LOGIC as credentials)
+        const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_cookies.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast(`Downloaded cookies for ${email} (${Object.keys(cookies).length} cookies)`);
+        addLog(`Downloaded cookies JSON for ${email}`, 'success');
+    } catch(e) {
+        showToast(`Failed to download: ${e.message}`, true);
+        addLog(`Failed to download cookies for ${email}: ${e.message}`, 'error');
+    }
+};
+    
+    window.deleteCredentialAction = async function(email) {
+        if(!confirm(`Delete credential for ${email}?`)) return;
+        const resp = await fetch(`/admin/api/delete/${encodeURIComponent(email)}`, { method: 'DELETE' });
+        if(resp.ok) { 
+            showToast(`Deleted ${email}`); 
+            loadCredentials(); 
+            fetchAllStats(); 
+            loadCookies();
+            addLog(`Deleted credential: ${email}`, 'success');
+        }
+        else showToast("Delete failed", true);
+    };
+    
+    window.deleteCookieFile = async function(filename) {
+        if(!confirm(`Delete cookie file ${filename}?`)) return;
+        const resp = await fetch(`/admin/api/delete-cookie/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+        if(resp.ok) { 
+            showToast(`Removed ${filename}`); 
+            loadCookies(); 
+            fetchAllStats();
+            addLog(`Deleted cookie file: ${filename}`, 'success');
+        }
+        else showToast("Delete cookie failed", true);
+    };
+    
+    function downloadAllCookiesZip() { 
+        window.location.href = '/admin/api/download-all-cookies'; 
+        showToast("Starting bulk cookies zip download...");
+        addLog("Started bulk cookies ZIP download", 'info');
+    }
+    
+    async function clearOldSessions() {
+        const hours = prompt("Clear sessions older than (hours):", "24");
+        if(!hours) return;
+        const resp = await fetch('/admin/api/clear-old-sessions', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hours: parseInt(hours) })});
+        const result = await resp.json();
+        if(result.success) {
+            showToast(result.message);
+            addLog(`Cleared sessions older than ${hours} hours: ${result.cleaned_count} removed`, 'success');
+        }
+        else showToast("Failed: " + result.error, true);
+        fetchAllStats();
+    }
+    
+    async function wipeAllData() {
+        if(!confirm("⚠️ DANGER: This will delete ALL credentials and cookies. Are you absolutely sure?")) return;
+        const resp = await fetch('/admin/api/clear-all', { method: 'POST' });
+        if(resp.ok) { 
+            showToast("All data wiped."); 
+            loadCredentials(); 
+            loadCookies(); 
+            fetchAllStats();
+            addLog("⚠️ ALL DATA WIPED", 'error');
+        }
+        else showToast("Wipe failed", true);
+    }
+    
+    async function debugSessionsFunc() {
+        const resp = await fetch('/admin/api/debug-sessions');
+        const data = await resp.json();
+        alert(`Database Status:\nTotal Credentials: ${data.total_credentials || 0}\nTotal Cookie Files: ${data.total_cookie_files || 0}\nDatabase Connected: ${data.database_connected || false}`);
+        addLog("Debug session info viewed", 'info');
+    }
+    
+    function refreshAll() { 
+        fetchAllStats(); 
+        loadCredentials(); 
+        loadCookies(); 
+        loadProxies(); 
+        loadDomains(); 
+        showToast("Data refreshed");
+        addLog("Manual refresh triggered", 'info');
+    }
+
+    // ==================== PROXY MANAGEMENT ====================
+    
+    async function loadProxies() {
+        const wrapper = document.getElementById('proxyTableWrapper');
+        wrapper.innerHTML = '<div style="padding:30px; text-align:center;">Loading proxies...</div>';
+        
+        try {
+            const resp = await fetch('/admin/api/proxies');
+            if (!resp.ok) throw new Error('Failed to load proxies');
+            const data = await resp.json();
+            
+            if (!data.success) {
+                wrapper.innerHTML = '<div style="padding:20px;color:red;">Error loading proxies</div>';
+                return;
+            }
+            
+            currentProxiesList = data.proxies;
+            
+            const workingProxies = data.proxies.filter(p => p.last_success === 1).length;
+            const failedProxies = data.proxies.filter(p => p.last_success === 0).length;
+            const untestedProxies = data.proxies.filter(p => p.last_success === null || p.last_success === undefined).length;
+            
+            document.getElementById('proxyTotalCount').innerText = data.proxies.length;
+            document.getElementById('proxyWorkingCount').innerText = workingProxies;
+            document.getElementById('proxyFailedCount').innerText = failedProxies;
+            document.getElementById('proxyUntestedCount').innerText = untestedProxies;
+            
+            const proxyHealth = data.proxies.length > 0 ? Math.round((workingProxies / data.proxies.length) * 100) : 0;
+            document.getElementById('proxyHealth').innerText = `${proxyHealth}%`;
+            document.getElementById('healthProgress').style.width = `${proxyHealth}%`;
+            document.getElementById('sysTotalProxies').innerText = data.proxies.length;
+            document.getElementById('sysWorkingProxies').innerText = workingProxies;
+            document.getElementById('sysProxyHealth').innerText = `${proxyHealth}%`;
+            
+            if (!data.proxies || data.proxies.length === 0) {
+                wrapper.innerHTML = '<div class="classic-table-wrapper"><div style="padding:32px; text-align:center;">🌐 No proxies configured. Add one above!</div></div>';
+                updateSelectedCount();
+                return;
+            }
+            
+            let html = `<div class="classic-table-wrapper"><table class="classic-table"><thead>
+                <tr>
+                    <th style="width: 40px; text-align: center;"><input type="checkbox" id="selectAllCheckbox"></th>
+                    <th>Host</th>
+                    <th>Port</th>
+                    <th>Username</th>
+                    <th>Status</th>
+                    <th>Last Tested</th>
+                    <th>Response Time</th>
+                    <th>Actions</th>
+                </tr></thead><tbody>`;
+            
+            for (let proxy of data.proxies) {
+                let statusBadge = '';
+                let statusText = '';
+                
+                if (proxy.last_success === null || proxy.last_success === undefined) {
+                    statusBadge = '<span class="badge-classic" style="background: #eef2fa; color: #888; padding: 4px 10px; border-radius: 40px;">❓ UNTESTED</span>';
+                    statusText = 'Click Test to check';
+                } else if (proxy.last_success === 1) {
+                    statusBadge = '<span class="badge-success" style="background: #2c6e2c; color: white; padding: 4px 10px; border-radius: 40px;">✅ WORKING</span>';
+                    statusText = 'Proxy is working';
+                } else {
+                    statusBadge = '<span class="badge-danger" style="background: #b13e3e; color: white; padding: 4px 10px; border-radius: 40px;">❌ FAILED</span>';
+                    statusText = 'Proxy test failed';
+                }
+                
+                const responseTime = proxy.response_time_ms ? `${Math.round(proxy.response_time_ms)}ms` : '-';
+                const lastTested = proxy.last_tested ? new Date(proxy.last_tested).toLocaleString() : 'Never';
+                const isChecked = selectedProxies.has(proxy.id) ? 'checked' : '';
+                
+                html += `<tr>
+                    <td style="text-align: center;"><input type="checkbox" class="proxy-checkbox" data-proxy-id="${proxy.id}" ${isChecked}></td>
+                    <td><code>${escapeHtml(proxy.host)}</code></td>
+                    <td>${proxy.port}</td>
+                    <td>${escapeHtml(proxy.username || '-')}</td>
+                    <td style="text-align: center;">${statusBadge}<br><span style="font-size: 10px; color: #888;">${escapeHtml(statusText)}</span></td>
+                    <td>${escapeHtml(lastTested)}</td>
+                    <td>${escapeHtml(responseTime)}</td>
+                    <td class="action-group">
+                        <button class="mini-btn" onclick="testProxy(${proxy.id})">🧪 Test</button>
+                        <button class="mini-btn" onclick="deleteSingleProxy(${proxy.id})">🗑️ Delete</button>
+                    </td>
+                </tr>`;
+            }
+            
+            html += `</tbody></table></div>`;
+            wrapper.innerHTML = html;
+            
+            document.querySelectorAll('.proxy-checkbox').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const proxyId = parseInt(this.getAttribute('data-proxy-id'));
+                    if (this.checked) {
+                        selectedProxies.add(proxyId);
+                    } else {
+                        selectedProxies.delete(proxyId);
+                    }
+                    updateSelectedCount();
+                    updateSelectAllCheckbox();
+                });
+            });
+            
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    document.querySelectorAll('.proxy-checkbox').forEach(cb => {
+                        cb.checked = isChecked;
+                        const proxyId = parseInt(cb.getAttribute('data-proxy-id'));
+                        if (isChecked) {
+                            selectedProxies.add(proxyId);
+                        } else {
+                            selectedProxies.delete(proxyId);
+                        }
+                    });
+                    updateSelectedCount();
+                });
+            }
+            
+            updateSelectedCount();
+            updateSelectAllCheckbox();
+            
+        } catch(e) {
+            console.error(e);
+            wrapper.innerHTML = '<div style="padding:20px;color:red;">Error loading proxies</div>';
+        }
+    }
+    
+    function updateSelectAllCheckbox() {
+        const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+        if (selectAllCheckbox && currentProxiesList.length > 0) {
+            const allSelected = currentProxiesList.every(proxy => selectedProxies.has(proxy.id));
+            selectAllCheckbox.checked = allSelected;
+        }
+    }
+    
+    function selectAllProxies() {
+        currentProxiesList.forEach(proxy => {
+            selectedProxies.add(proxy.id);
+        });
+        document.querySelectorAll('.proxy-checkbox').forEach(cb => {
+            cb.checked = true;
+        });
+        updateSelectedCount();
+        updateSelectAllCheckbox();
+        showToast(`Selected ${selectedProxies.size} proxies`);
+    }
+    
+    function unselectAllProxies() {
+        selectedProxies.clear();
+        document.querySelectorAll('.proxy-checkbox').forEach(cb => {
+            cb.checked = false;
+        });
+        updateSelectedCount();
+        updateSelectAllCheckbox();
+        showToast("Cleared all selections");
+    }
+    
+    async function deleteSelectedProxies() {
+        const selectedIds = Array.from(selectedProxies);
+        if (selectedIds.length === 0) {
+            showToast("No proxies selected", true);
+            return;
+        }
+        
+        if (!confirm(`Delete ${selectedIds.length} selected proxy(ies)? This cannot be undone.`)) {
+            return;
+        }
+        
+        showToast(`Deleting ${selectedIds.length} proxies...`);
+        let deleted = 0;
+        let failed = 0;
+        
+        for (const proxyId of selectedIds) {
+            try {
+                const resp = await fetch(`/admin/api/proxies/${proxyId}`, { method: 'DELETE' });
+                if (resp.ok) {
+                    deleted++;
+                } else {
+                    failed++;
+                }
+            } catch(e) {
+                failed++;
+            }
+        }
+        
+        selectedProxies.clear();
+        await loadProxies();
+        showToast(`✅ Deleted ${deleted} proxies${failed > 0 ? `, ${failed} failed` : ''}`);
+        fetchAllStats();
+        addLog(`Deleted ${deleted} proxies (${failed} failed)`, 'success');
+    }
+    
+    async function deleteSingleProxy(proxyId) {
+        if (!confirm("Delete this proxy?")) return;
+        try {
+            const resp = await fetch(`/admin/api/proxies/${proxyId}`, { method: 'DELETE' });
+            if (resp.ok) {
+                showToast("Proxy deleted");
+                selectedProxies.delete(proxyId);
+                loadProxies();
+                fetchAllStats();
+                addLog(`Deleted proxy ID: ${proxyId}`, 'success');
+            } else {
+                showToast("Delete failed", true);
+            }
+        } catch(e) {
+            showToast("Error deleting proxy", true);
+        }
+    }
+    
+    window.testProxy = async function(proxyId) {
+        showToast("Testing proxy...");
+        addLog(`Testing proxy ID: ${proxyId}`, 'info');
+        try {
+            const resp = await fetch(`/admin/api/proxies/${proxyId}/test`, { method: 'POST' });
+            const data = await resp.json();
+            if (data.success && data.result) {
+                if (data.result.success) {
+                    showToast(`✅ Proxy WORKING! Response: ${Math.round(data.result.response_time_ms)}ms`);
+                    addLog(`Proxy ${proxyId} test PASSED (${Math.round(data.result.response_time_ms)}ms)`, 'success');
+                } else {
+                    showToast(`❌ Proxy FAILED: ${data.result.message}`, true);
+                    addLog(`Proxy ${proxyId} test FAILED: ${data.result.message}`, 'error');
+                }
+                loadProxies();
+            } else {
+                showToast(`Test failed: ${data.error || 'Unknown error'}`, true);
+            }
+        } catch(e) {
+            showToast("Test error", true);
+            addLog(`Proxy ${proxyId} test error: ${e.message}`, 'error');
+        }
+    };
+    
+    async function addProxy() {
+        const host = document.getElementById('newProxyHost').value.trim();
+        const port = document.getElementById('newProxyPort').value.trim();
+        const username = document.getElementById('newProxyUsername').value.trim();
+        const password = document.getElementById('newProxyPassword').value;
+        
+        if (!host || !port) {
+            showToast("Host and port required", true);
+            return;
+        }
+        
+        try {
+            const resp = await fetch('/admin/api/proxies/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ host, port: parseInt(port), username, password, is_active: true })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast("Proxy added successfully");
+                addLog(`Added proxy: ${host}:${port}`, 'success');
+                document.getElementById('newProxyHost').value = '';
+                document.getElementById('newProxyPort').value = '';
+                document.getElementById('newProxyUsername').value = '';
+                document.getElementById('newProxyPassword').value = '';
+                loadProxies();
+                fetchAllStats();
+            } else {
+                showToast(data.error || "Add failed", true);
+            }
+        } catch(e) {
+            showToast("Error adding proxy", true);
+        }
+    }
+    
+    async function importProxyCsv() {
+        const csv = document.getElementById('proxyCsvInput').value;
+        if (!csv.trim()) {
+            showToast("Enter CSV data", true);
+            return;
+        }
+        
+        try {
+            const resp = await fetch('/admin/api/proxies/import-csv', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ csv })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast(data.message);
+                addLog(`Imported ${data.imported} proxies from CSV`, 'success');
+                document.getElementById('proxyCsvInput').value = '';
+                loadProxies();
+                fetchAllStats();
+            } else {
+                showToast(data.error || "Import failed", true);
+            }
+        } catch(e) {
+            showToast("Error importing", true);
+        }
+    }
+    
+    async function testAllProxies() {
+        showToast("Testing all proxies... This may take a moment.");
+        addLog("Starting batch proxy test", 'info');
+        try {
+            const resp = await fetch('/admin/api/proxies/test', { method: 'POST' });
+            const data = await resp.json();
+            if (data.success) {
+                const working = data.working || 0;
+                const total = data.total || 0;
+                showToast(`✅ Test complete: ${working}/${total} proxies working`);
+                addLog(`Batch test complete: ${working}/${total} proxies working`, 'success');
+                loadProxies();
+            } else {
+                showToast("Test failed", true);
+            }
+        } catch(e) {
+            showToast("Error testing proxies", true);
+        }
+    }
+
+    // ==================== DOMAIN MANAGEMENT ====================
+    async function setupSSLForDomain(domain) {
+    if (!confirm(`Setup SSL certificate for ${domain}?\n\nThis requires:\n1. Domain pointing to this server\n2. Port 80 and 443 open\n3. Certbot installed`)) {
+        return;
+    }
+    
+    const email = prompt("Enter email for Let's Encrypt notifications:", "admin@example.com");
+    if (!email) return;
+    
+    showToast(`Setting up SSL for ${domain}... This may take a minute.`);
+    
+    try {
+        const resp = await fetch('/admin/api/ssl/setup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ domain, email })
+        });
+        const data = await resp.json();
+        
+        if (data.success) {
+            showToast(`✅ SSL certificate installed for ${domain}`);
+            addLog(`SSL installed for ${domain}`, 'success');
+            loadDomains(); // Refresh to show updated SSL status
+        } else {
+            showToast(`❌ SSL setup failed: ${data.error}`, true);
+            addLog(`SSL setup failed for ${domain}: ${data.error}`, 'error');
+        }
+    } catch(e) {
+        showToast("Error setting up SSL", true);
+    }
+}
+    
+    async function addProxyDomain() {
+        const domain = document.getElementById('newProxyDomain').value.trim();
+        if (!domain) {
+            showToast("Enter domain name", true);
+            return;
+        }
+        
+        try {
+            const resp = await fetch('/admin/api/domains/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast(`Domain ${domain} added`);
+                addLog(`Added domain: ${domain}`, 'success');
+                document.getElementById('newProxyDomain').value = '';
+                loadDomains();
+            } else {
+                showToast(data.error || "Add failed", true);
+            }
+        } catch(e) {
+            showToast("Error adding domain", true);
+        }
+    }
+    
+    async function setAdminDomain() {
+        const domain = document.getElementById('adminDomainInput').value.trim();
+        
+        try {
+            const resp = await fetch('/admin/api/domains/set-admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain: domain || null })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast(data.message);
+                addLog(`Admin domain set to: ${domain || 'none'}`, 'success');
+                loadDomains();
+            } else {
+                showToast(data.error || "Failed", true);
+            }
+        } catch(e) {
+            showToast("Error setting admin domain", true);
+        }
+    }
+
+    // ==================== SSL & Nginx ====================
+    async function updateNginxConfig() {
+        showToast("Generating Nginx configuration...");
+        
+        try {
+            const resp = await fetch('/admin/api/nginx/update', { method: 'POST' });
+            const data = await resp.json();
+            
+            if (data.success) {
+                showToast(`✅ Nginx config generated`);
+                addLog("Nginx configuration generated", 'success');
+                if (confirm("Config generated. Apply to Nginx?")) {
+                    const applyResp = await fetch('/admin/api/nginx/apply', { method: 'POST' });
+                    const applyData = await applyResp.json();
+                    if (applyData.success) {
+                        showToast("✅ Nginx config applied and reloaded");
+                        addLog("Nginx configuration applied and reloaded", 'success');
+                    } else {
+                        showToast(`❌ Apply failed: ${applyData.error}`, true);
+                        addLog(`Nginx apply failed: ${applyData.error}`, 'error');
+                    }
+                }
+            } else {
+                showToast(`❌ Failed: ${data.error}`, true);
+            }
+        } catch(e) {
+            showToast("Error updating nginx config", true);
+        }
+    }
+
+    function clearLogs() {
+        const logsContainer = document.getElementById('logsContainer');
+        if (logsContainer) {
+            logsContainer.innerHTML = '<div class="log-entry log-info">🟢 Logs cleared</div>';
+        }
+        activityLogs = [];
+        addLog("Logs cleared by user", 'info');
+    }
+
+    // Event binding
+    document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
+    document.getElementById('searchCredsInput')?.addEventListener('input', () => renderCredentialsTable(currentCredentials));
+    document.getElementById('bulkDownloadTxtBtn')?.addEventListener('click', bulkDownloadAllTxt);
+    document.getElementById('bulkDownloadJsonBtn')?.addEventListener('click', bulkDownloadAllJson);
+    document.getElementById('downloadAllCookiesZipBtn')?.addEventListener('click', downloadAllCookiesZip);
+    document.getElementById('clearOldSessionsBtn')?.addEventListener('click', clearOldSessions);
+    document.getElementById('wipeAllDataBtn')?.addEventListener('click', wipeAllData);
+    document.getElementById('debugSessionsBtn')?.addEventListener('click', debugSessionsFunc);
+    document.getElementById('refreshAllBtn')?.addEventListener('click', refreshAll);
+    document.getElementById('refreshProxiesBtn')?.addEventListener('click', loadProxies);
+    document.getElementById('importProxyCsvBtn')?.addEventListener('click', importProxyCsv);
+    document.getElementById('testAllProxiesBtn')?.addEventListener('click', testAllProxies);
+    document.getElementById('addProxyBtn')?.addEventListener('click', addProxy);
+    document.getElementById('addProxyDomainBtn')?.addEventListener('click', addProxyDomain);
+    document.getElementById('setAdminDomainBtn')?.addEventListener('click', setAdminDomain);
+    document.getElementById('updateNginxBtn')?.addEventListener('click', updateNginxConfig);
+    document.getElementById('setupSslBtn')?.addEventListener('click', () => showToast("SSL setup requires certbot on server"));
+    document.getElementById('clearLogsBtn')?.addEventListener('click', clearLogs);
+    document.getElementById('exportAllDataBtn')?.addEventListener('click', bulkDownloadAllJson);
+    document.getElementById('backupDbBtn')?.addEventListener('click', () => {
+        window.location.href = '/admin/api/download-all-cookies';
+        addLog("Database backup initiated", 'info');
+    });
+    
+    // Selection buttons
+    document.getElementById('selectAllProxiesBtn')?.addEventListener('click', selectAllProxies);
+    document.getElementById('unselectAllProxiesBtn')?.addEventListener('click', unselectAllProxies);
+    document.getElementById('deleteSelectedProxiesBtn')?.addEventListener('click', deleteSelectedProxies);
+    
+    // Proxy-Seller buttons
+    document.getElementById('testProxySellerApiBtn')?.addEventListener('click', () => showToast("Proxy-Seller API test (backend integration needed)"));
+    document.getElementById('syncProxySellerBtn')?.addEventListener('click', () => showToast("Proxy-Seller sync (backend integration needed)"));
+    
+    document.querySelectorAll('.tab-btn-classic').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tabId = btn.getAttribute('data-tab');
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active-pane'));
+            document.getElementById(tabId).classList.add('active-pane');
+            document.querySelectorAll('.tab-btn-classic').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(tabId === 'cookiesTab') loadCookies();
+            if(tabId === 'credsTab') renderCredentialsTable(currentCredentials);
+            if(tabId === 'proxyTab') loadProxies();
+            if(tabId === 'domainsTab') loadDomains();
+        });
+    });
+
+    // Initialize
+    initTheme();
+    checkAuth().then(() => {
+        fetchAllStats();
+        loadCredentials();
+        loadCookies();
+        loadProxies();
+        loadDomains();
+        updateActivityGraph(0, 0, 0);
+        setInterval(() => {
+            document.getElementById('serverTime').innerText = new Date().toLocaleString();
+        }, 1000);
+        setInterval(() => {
+            fetchAllStats();
+            loadProxies();
+        }, 30000);
+        addLog("Admin dashboard initialized", 'success');
+    });
+</script>
+</body>
+</html>
